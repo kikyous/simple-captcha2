@@ -45,7 +45,7 @@ After installation, follow these simple steps to setup the plugin. The setup wil
 
 ```bash
 rails generate simple_captcha
-rake db:migrate
+rake db:migrate # Mongoid: skip this step and remove the migration
 ```
 
 ## Usage
@@ -94,6 +94,23 @@ and in the model class add this code
 class User < ActiveRecord::Base
   apply_simple_captcha
 end
+```
+
+Mongoid:
+
+```ruby
+class User
+  include SimpleCaptcha::ModelHelpers
+  apply_simple_captcha
+end
+```
+
+#### Strong parameters (Rails 4.x)
+
+Must add them:
+
+```ruby
+:captcha, :captcha_key
 ```
 
 ####Form-Builder helper
@@ -174,6 +191,8 @@ You can also specify 'random' to select the random image style.
 
 * ``:distortion`` - handles the complexity of the image. The :distortion can be set to 'low', 'medium' or 'high'. Default is 'low'.
 
+* ``:implode`` - handles the complexity of the image. The :implode can be set to 'none', 'low', 'medium' or 'high'. Default is 'medium'.
+
 Create "./config/initializers/simple_captcha.rb"
 
 ```ruby
@@ -200,6 +219,10 @@ SimpleCaptcha.setup do |sc|
   # default: low
   # possible values: 'low', 'medium', 'high', 'random'
   sc.distortion = 'medium'
+
+  # default: medium
+  # possible values: 'none', 'low', 'medium', 'high'
+  sc.implode = 'low'
 end
 ```
 
@@ -281,6 +304,7 @@ en:
   simple_captcha:
     placeholder: "Enter the image value"
     label: "Enter the code in the box:"
+    refresh_button_text: "Refresh"
     message:
       default: "Secret Code did not match with the Image"
       user: "The secret Image and code were different"
